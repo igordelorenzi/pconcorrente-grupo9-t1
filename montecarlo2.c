@@ -44,7 +44,7 @@ int main(void)
 	fclose(fp);
 	printf("Semente: %ld\n", seed);
 
-    pthread_mutex_init(&mutex,NULL);
+	pthread_mutex_init(&mutex,NULL);
 
 	for (i=0; i < NUM_THREADS; i++) {
 		check = pthread_create(&threads[i], NULL, subrotina_montecarlo, (void *)i);
@@ -58,7 +58,6 @@ int main(void)
 		pthread_join(threads[i], NULL);
 
 	pi = 4.0*total_under/(total_over + total_under);
-	piaux = PI;
 	erro = sqrt((PI-pi)*(PI-pi));
 
 	printf("Valor de Pi: %.20lf\n"
@@ -86,12 +85,12 @@ void *subrotina_montecarlo(void *ptr)
 	pty = &y;
 
 	for (n=worker; n <= NUM_ITERACOES; n+= NUM_THREADS) {
-	  count++;
-	  drand48_r(pts[worker],ptx);
-	  drand48_r(pts[worker],pty);
+		count++;
+		drand48_r(pts[worker],ptx);
+		drand48_r(pts[worker],pty);
 
-	  if (y > sqrt(1. - x*x)) over++;
-	  else under++;
+		if (y > sqrt(1. - x*x)) over++;
+		else under++;
 	}
 
 	// Adiciona as variáveis locais às variavéis globais
