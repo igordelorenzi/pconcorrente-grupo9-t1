@@ -1,0 +1,42 @@
+Especificação do Primeiro Trabalho
+
+
+Considere os seguintes algoritmos para realizar o cálculo aproximado do número PI:
+
+Gauss-Legendre
+Borwein
+Monte Carlo
+
+Desenvolva programas para calcular o número PI aproximado com precisão de 10 milhões de dígitos corretos, 
+utilizando os três algoritmos listados acima. Para os programas, deve ser apresentado:
+
+O valor aproximado de PI a cada iteração
+O número total de iterações para cada algoritmo
+Para os Programas
+
+Fazer uma versão sequencial utilizando C
+Fazer uma versão paralela utilizando Posix Pthreads
+Apresentar os resultados da seguinte forma:
+
+Fazer um comparativo entre os algoritmos e entre as versões sequenciais e paralelas de cada um deles (Calcular o Speedup)
+Um relatório apresentando uma introdução sobre os algoritmos, os resultados obtidos e as soluções. O relatório deve ter 
+no mínimo 5 páginas e no máximo 10 páginas desconsiderando capas, indíces e bibliografia. No máximo 1 página explicando 
+cada algoritmo e seus comentários.
+Discuta as soluções, as dificuldades, os resultados obtidos, o hardware utilizado, a metodologia de execução dos 
+experimentos, etc.
+O relatório deve ser enviado via Moodle conforme combinado no primeiro dia de aula
+O relatório deve apressentar a forma de execução dos codigos (README)
+Os códigos devem ser enviados via Google Code.
+Avaliação
+
+As perguntas para o grupo serão relativas à forma de desenvolvimento, eficiências dos algoritmos, uso correto das 
+ferramentas, legibilidade do código e documentação e participação dos membros no desenvolvimento do trabalho.
+O número de perguntas será decidido no dia da apresentação.
+Os horários das apresentações serão definidos em breve
+Prazos
+
+Relatório e Códigos
+
+25/03/12 - 23:59h (Turma B)
+
+28/03/12 - 23:59h (Turma A)
