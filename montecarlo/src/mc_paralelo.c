@@ -16,7 +16,7 @@
 
 /* 1 bilhão de iterações */
 #define NUM_ITERACOES 1000000000
-#define NUM_THREADS 1000
+#define NUM_THREADS 70
 #define ldouble long double
 
 /**
