@@ -1,0 +1,115 @@
+1. Introdução
+
+O Método de Monte Carlo (MMC) é um método estatístico utilizado em simulações estocásticas com diversas 
+aplicações em áreas como a física, matemática e biologia. O método de Monte Carlo tem sido utilizado há 
+bastante tempo como forma de obter aproximações numéricas de funções complexas. Este método tipicamente 
+envolve a geração de observações de alguma distribuição de probabilidades e o uso da amostra obtida para 
+aproximar a função de interesse. As aplicações mais comuns são em computação numérica para avaliar 
+integrais. A ideia do método é escrever a integral que se deseja calcular como um valor esperado.
+
+
+2. Uso do MMC para aproximação de Pi
+
+O número Pi também pode ser estimado através do Método de Monte Carlo. Esta aplicação foi construída para 
+determinar um valor estimado do número. Para isso, calcula-se a área de 1/4 de círculo. E, a partir deste 
+valor estimado, pode-se aproximar o valor do Pi. O número de iterações do algoritmo determina a precisão 
+do cálculo, embora sua convergência seja determinada estatísticamente. Portanto, a partir de um determinado 
+número de iterações, já se pode obter uma boa aproximação (como também uma ruim). E a taxa de convergência 
+cai significativamente com o tempo.
+
+Considerando A a área de 1/4 de círculo, tem-se que:
+
+	A = (1 / 4) * (Pi * r^2),	(1)
+
+sendo r o raio do círculo.
+
+Pelo Método de Monte Carlo,
+
+	A = l^2 * (Pd / Pt),		(2)
+
+sendo Pd os pontos lançados aleatoriamente que ficaram dentro da área de 1/4 de círculo, Pt o número 
+total de pontos gerados, e l o tamanho da lateral do quadrado circunscrito ao círculo.
+
+Unindo as equações (1), e (2) obtém-se:
+
+	(1 / 4) * (Pi * r^2) = l^2 * (Pd / Pt)
+
+	Pi = [l^2 * (Pd / Pt)] / [(1 / 4) * r^2]
+
+Considerando-se l = r = 1 obtém-se:
+
+	Pi = 4 * (Pd / Pt).			(3)
+
+O algoritmo de cálculo consiste em gerar pontos P(x, y) sendo 0 <= x <= 1 e 0 <= y <= 1. Identificar 
+e contar os pontos Pd e Pt, e aplicar a equação (3).
+
+Algoritmo de Cálculo do Pi:
+	1.	para Pt = 1 até n faça
+	2.		x <- número aleatório entre 0 e 1.
+	3.		y <- número aleatório entre 0 e 1.
+	4.		se y > raiz_quadrada(1.0 - x^2) então
+	5.			Pd <- Pd + 1
+	6.		fim se
+	7.	fim para
+	8.	Pi <- 4 * (Pd / Pt)
+
+
+3. Experimentação e Resultados
+
+Para experimentação do MMC, foram utilizados duas implementações, uma sequencial e outra paralela.
+Os testes foram feitos em terminal único e também em cluster, mas devido a lenta taxa de convergência
+do método e a impossibilidade de alcançar um Pi aproximado com 10 milhões de casas decimais em tempo 
+hábil, os resultados que serão apresentados neste documento não levam em consideração o uso do cluster.
+
+Mais especificamente, o computador utilizado foi um Core 2 Duo 2.0 GHz e a compilação do código NÃO 
+impunha otimização (gcc flag: -Ox, x=0,1,2,3). O kernel está na versão 2.6.38-11-generic (debian-based) 
+x86_64 e o GCC está na versão 4.5.2 (Ubuntu/Linaro 4.5.2-8ubuntu4).
+
+3.1. Cálculo do SpeedUp (1 bilhão de iterações):
+	
+Fórmula: S = Ts / Tp, onde Ts é o tempo (em segundos) de execução sequencial e Tp o tempo (em segundos) 
+de execução em pararelo.
+
+	0. S(0) = 51,681393 / 33,123007 = 1,560286873		(5 Threads)
+	1. S(1) = 51,681393 / 26,104581 = 1,979782514 		(10 Threads)
+	2. S(2) = 51,681393 / 26,112106 = 1,979211979 		(20 Threads)
+	3. S(3) = 51,681393 / 27,541040 = 1,876522927 		(30 Threads)
+	4. S(4) = 51,681393 / 28,243671 = 1,82983979 		(40 Threads)
+	5. S(5) = 51,681393 / 27,913608 = 1,851476635 		(50 Threads)
+	6. S(6) = 51,681393 / 26,628012 = 1,940865619		(60 Threads)
+	7. S(7) = 51,681393 / 26,534757 = 1,947686689 		(70 Threads)
+	8. S(8) = 51,681393 / 26,061572 = 1,983049718		(80 Threads)
+	9. S(9) = 51,681393 / 28,129742 = 1,837250871 		(90 Threads)
+	10. S(10) = 51,681393 / 30,841798 = 1,675693259 	(100 Threads)
+	11. S(11) = 51,681393 / 31,505250 = 1,640405742 	(110 Threads)
+	12. S(12) = 51,681393 / 31,043731 = 1,664793223 	(120 Threads)
+	13. S(13) = 51,681393 / 35,092017 = 1,472739313 	(130 Threads)
+	14. S(14) = 51,681393 / 33,067115 = 1,562924162 	(140 Threads)
+	15. S(15) = 51,681393 / 33,355614 = 1,549406136 	(150 Threads)
+
+Como podemos observar, o melhor SpeedUp é encontrado ao redor de 10~90 threads. Lembrando que Ts e Tp 
+são os tempos médios baseados em 3 medições consecutivas.
+
+3.2. Aproximação do Pi
+
+O valor médio do Pi foi calculado a partir de 18 amostras.
+
+Pi_medio = (3,1415849240 + 3,1414885600 + 3,1411286714 + 3,1417690280 + 3,1415722600 + 3,1419527297 + 
+		3,1414443628 + 3,1416328200 + 3,1410918434 + 3,1411808674 + 3,1422611114 + 3,1414600000 + 
+		3,1417615914 + 3,1415315697 + 3,1411923976 + 3,1411777627 + 3,1417020068 + 3,1420488468) / 18
+		= 3,14155452
+
+Como podemos observar, sua precisão se mantém até a quarta casa decimal (Pi real = 3,141592...) e mesmo 
+com o aumento drástico nas iterações a precisão pouco se altera. Isso nos indica que este método não é 
+o mais indicado para uma aproximação mais exata.
+
+
+4. Referências Bibliográficas
+
+http://centros5.pntic.mec.es/ies.de.bullas/dp/matema/javas/cal_pimon.htm
+http://en.wikipedia.org/wiki/Linear_congruential_generator
+http://www.dreamincode.net/forums/topic/24225-random-number-generation-102/
+http://en.wikipedia.org/wiki/Speedup
+http://www.inf.ufrgs.br/gppd/disc/cmp134/trabs/T2/021/html/index.html
+http://pt.wikipedia.org/wiki/M%C3%A9todo_de_Monte_Carlo
+
