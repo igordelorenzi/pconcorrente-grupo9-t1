@@ -4,6 +4,7 @@
 #include <sys/time.h>
 
 #define NUM_ITERACOES 1000
+#define PRECISAO 40000000
 
 // Como compilar: gcc borquein_seq.c -o borwein_seq -lgmp
 // Como executar: ./borwein_seq
@@ -12,26 +13,28 @@ int main(void)
 {
 	struct timeval tv1, tv2; // Variaveis para calcular o tempo de execucao
         double t1, t2;
+	int iteracoes;
 
-	mpf_t pi, aAnt, aPos, yAnt, yPos; // Variaveis principais
+	mpf_t pi, lastPi, aAnt, aPos, yAnt, yPos; // Variaveis principais
 	mpf_t aAntAux, aAntAux2, yAntAux, yAntAux2; // Variaveis auxiliares
-	int i, x;
+	int x;
 
 	/* Registra a marca de tempo t1 antes de iniciar os calculos */
         gettimeofday(&tv1, NULL);
         t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
 
 	// Inicializacoes de variaveis GMP
-	mpf_init2(pi, 100000);
-	mpf_init2(aAnt, 100000);
-	mpf_init2(aPos, 100000);
-	mpf_init2(yAnt, 100000);
-	mpf_init2(yPos, 100000);
+	mpf_init2(pi, PRECISAO);
+	mpf_init2(lastPi, PRECISAO);
+	mpf_init2(aAnt, PRECISAO);
+	mpf_init2(aPos, PRECISAO);
+	mpf_init2(yAnt, PRECISAO);
+	mpf_init2(yPos, PRECISAO);
 
-	mpf_init2(aAntAux, 100000);
-	mpf_init2(aAntAux2, 100000);
-	mpf_init2(yAntAux, 100000);
-	mpf_init2(yAntAux2, 100000);
+	mpf_init2(aAntAux, PRECISAO);
+	mpf_init2(aAntAux2, PRECISAO);
+	mpf_init2(yAntAux, PRECISAO);
+	mpf_init2(yAntAux2, PRECISAO);
 	
 	// Primeiros valores
 	mpf_sqrt_ui(aAnt, 2);
@@ -41,13 +44,14 @@ int main(void)
 	mpf_sqrt_ui(yAnt, 2);
 	mpf_sub_ui(yAnt, yAnt, 1);
 
+	mpf_set_ui(lastPi, 0);
 	mpf_set_ui(pi, 0);
-	i = 0;
+	iteracoes = 0;
 	x = 0;
 
 	// Iteracoes para calculo do numero Pi
-	while(i < NUM_ITERACOES){
-
+	while(1){
+		
 	//      yPos = (1 - pow(1-pow(yAnt,4),0.25)) / (1 + pow(1-pow(yAnt,4),0.25));
 
 		mpf_pow_ui(yAntAux, yAnt, 4);
@@ -69,7 +73,7 @@ int main(void)
 	
 		mpf_set_ui(aAntAux2, 2);
 
-		x = (2*i) + 3;
+		x = (2*iteracoes) + 3;
 		mpf_pow_ui(aAntAux2, aAntAux2, x);
 		mpf_mul(aAntAux, aAntAux, aAntAux2);
 
@@ -83,10 +87,22 @@ int main(void)
 		mpf_set(aAnt, aPos);
 		mpf_set(yAnt, yPos);
 
-		i++;
+		mpf_ui_div(pi, 1, aAnt);
+
+		gmp_printf("\nIteracao %d  | pi = %.25Ff", iteracoes, pi);
+		
+		if(mpf_eq(pi, lastPi, PRECISAO)){
+			/* Imprime na tela somente os 10 primeiros digitos depois da virgula */
+			gmp_printf("\nIteracao %d  | pi = %.25Ff", iteracoes, pi);
+			printf("\n%d iteracoes para alcancar 10 milhoes de digitos de corretos.", iteracoes);			
+			break;
+		}
+
+		mpf_set(lastPi, pi);
+
+		iteracoes++;
     	}
 
-	mpf_ui_div(pi, 1, aAnt);
 
 	/* Registra a marca de tempo t2 depois de terminar os calculos */
         gettimeofday(&tv2, NULL);
