@@ -33,12 +33,12 @@ int main(void)
 	llong i;
 	ldouble pi, pontosDentro = 0.0, pontosFora = 0.0;
 	struct timeval tv1, tv2;
-    double x, y, t1, t2;
+	double x, y, t1, t2;
 	long int seed = (long int)time(NULL);
 
 	/* Registra a marca de tempo t1 antes de iniciar os cálculos */
 	gettimeofday(&tv1, NULL);
-    t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
+	t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
 
 	/* Método de Monte Carlo */
 	for (i = 0L; i < NUM_ITERACOES; i++) {
@@ -56,7 +56,7 @@ int main(void)
 
 	/* Registra a marca de tempo t2 depois de terminar os cálculos */
 	gettimeofday(&tv2, NULL);
-    t2 = (double)(tv2.tv_sec) + (double)(tv2.tv_usec) / 1000000.00;
+	t2 = (double)(tv2.tv_sec) + (double)(tv2.tv_usec) / 1000000.00;
 
 	printf("Pi aproximado: %.10Lf\nTempo: %lf\n", pi, (t2-t1));
 

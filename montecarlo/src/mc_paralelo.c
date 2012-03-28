@@ -42,20 +42,20 @@ int main(int argc, char *argv[])
 	ldouble pi;
 	long int i;
 	struct timeval tv1, tv2;
-    double t1, t2;
+	double t1, t2;
 	pthread_t threads[NUM_THREADS];
 	int check;
 
 	/* Registra a marca de tempo t1 antes de iniciar os cálculos */
 	gettimeofday(&tv1, NULL);
-    t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
+	t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
 
 	/* Inicializa os mc_mutexes */
 	pthread_mutex_init(&mc_mutex, NULL);
 
 	/* Cria as threads para divisão de carga do método de aproximação */
 	for (i = 0L; i < NUM_THREADS; i++) {
-		check = pthread_create(&threads[i], NULL, subrotina_montecarlo, (void *)i);
+		check = pthread_create(&threads[i], NULL, subrotina_montecarlo, NULL);
 		if (check) {
 			printf("ERRO! pthread_create() retornou um erro de codigo: %d\n", check);
 			exit(-1);
@@ -83,7 +83,6 @@ int main(int argc, char *argv[])
 
 void *subrotina_montecarlo(void *ptr)
 {
-	long int fator = (long int)ptr + 1L;
 	ldouble over = 0.0;
 	ldouble under = 0.0;
 	double x, y;
