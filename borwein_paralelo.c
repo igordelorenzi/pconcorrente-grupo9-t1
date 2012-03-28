@@ -2,43 +2,21 @@
 #include <math.h>
 #include <gmp.h>
 #include <pthread.h>
+#include <sys/time.h>
 
 #define NUM_THREADS	8
+#define NUM_ITERACOES	1000
 
-// Como compilar: gcc BorweinGMP.c -o BorweinGMP -lgmp -pthread
+// Como compilar: gcc borwein_paralelo.c -o borwein_paralelo -lgmp -pthread
+// Como executar: ./borwein_paralelo
 
 pthread_mutex_t mutexA, mutexB, mutexC;
 mpf_t pi, aAnt, aPos, yAnt, yPos; // Variaveis principais
 mpf_t aAntAux, aAntAux2, yAntAux, yAntAux2; // Variaveis auxiliares
 int i, x;
 
-struct dadosThread {
-        int threadId;
-        int a, b, c, d;
-};
 
-struct dadosThread dadosThreadVet[NUM_THREADS];
-
-
-
-void *PrintNumber(void *threadArg)
-{
-        struct dadosThread *dados;
-        int x, y, z;
-
-        dados = (struct dadosThread *) threadArg;
-
-        x = dados->a;
-
-        printf("%d", x);
-
-        x++;
-        dados->a = x;
-
-        pthread_exit(NULL);
-}
-
-void *calculo0 (void *threadArg){
+void *calculo0 (void *threadParametro){
 	
 	pthread_mutex_lock(&mutexA);
 
@@ -52,7 +30,7 @@ void *calculo0 (void *threadArg){
 	pthread_exit(NULL);
 }
 
-void *calculo1 (void *threadArg){
+void *calculo1 (void *threadParametro){
 
 	mpf_set_ui(aAntAux2, 2);
 
@@ -63,11 +41,16 @@ void *calculo1 (void *threadArg){
 
 int main(void)
 {
-
+	struct timeval tv1, tv2; // Variaveis para calcular o tempo de execucao
+	double t1, t2;
         pthread_t threads[NUM_THREADS];  // Declarando as threads
 
-        // Variaveis 
+        // Flag de Erro das Threads
         int codRetorno;
+
+	/* Registra a marca de tempo t1 antes de iniciar os calculos */
+        gettimeofday(&tv1, NULL);
+	t1 = (double)(tv1.tv_sec) + (double)(tv1.tv_usec) / 1000000.00;
 
 	// Inicializacoes de variaveis GMP
 	mpf_init2(pi, 100000);
@@ -94,24 +77,8 @@ int main(void)
 	x = 0;
 
 
-
-	/* dadosThreadVet[0].threadId = 0;
-	dadosThreadVet[0].a = 5;
-
-
-        codRetorno = pthread_create(&threads[0], NULL, PrintNumber, (void *) &dadosThreadVet[0]);
-        if (codRetorno){
-                printf("ERRO de codigo %d na criacao da thread.\n", codRetorno);
-                exit(-1);
-        }
-
-        pthread_join(threads[0],NULL);
-
-        printf("\n\n%d", dadosThreadVet[0].a);*/
-
-
 	// Iteracoes para calculo do numero Pi
-	while(i < 100){
+	while(i < NUM_ITERACOES){
 
 	//      yPos = (1 - pow(1-pow(yAnt,4),0.25)) / (1 + pow(1-pow(yAnt,4),0.25));
 
@@ -129,7 +96,7 @@ int main(void)
 
         	
 		// Criando Thread 0
-		codRetorno = pthread_create(&threads[0], NULL, calculo0, (void *) &dadosThreadVet[0]);
+		codRetorno = pthread_create(&threads[0], NULL, calculo0, NULL);
 		if (codRetorno){
                 	printf("ERRO de codigo %d na criacao da thread.\n", codRetorno);
                 	exit(-1);
@@ -137,7 +104,7 @@ int main(void)
 		
 
 		// Criando Thread 1
-        	codRetorno = pthread_create(&threads[1], NULL, calculo1, (void *) &dadosThreadVet[1]);
+        	codRetorno = pthread_create(&threads[1], NULL, calculo1, NULL);
 		if(codRetorno){
 			printf("ERRO de codigo %d na criacao da thread.\n", codRetorno);
                 	exit(-1);
@@ -162,7 +129,12 @@ int main(void)
 
 	mpf_ui_div(pi, 1, aAnt);
 
+	/* Registra a marca de tempo t2 depois de terminar os calculos */
+        gettimeofday(&tv2, NULL);
+        t2 = (double)(tv2.tv_sec) + (double)(tv2.tv_usec) / 1000000.00;
+
 	gmp_printf("PI: %.100Ff\n", pi);
+	printf("Tempo: %lf\n", (t2-t1));
 
         /* Last thing that main() should do */
         pthread_exit(NULL);
