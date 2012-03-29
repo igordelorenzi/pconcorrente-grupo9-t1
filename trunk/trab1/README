@@ -1,0 +1,39 @@
+Instruções para compilar e executar (README)
+
+LINK do Trabalho: http://code.google.com/p/pconcorrente-grupo9-t1/
+
+>>>Gauss-Legendre
+>>Versão Sequencial
+  Compilar:
+    $ gcc gl_seq.c –o gl_seq –lgmp –lm
+  Executar:
+    $ ./gl_seq
+>>Versão Paralela
+  Compilar:
+    $ gcc gl_paralelo.c –o gl_paralelo –lgmp -pthread –lm
+  Executar:
+    $ ./gl_paralelo
+
+>>>Borwain
+>>Versão Sequencial
+  Compilar:
+    $ gcc borwein_seq.c –o borwein_seq –lgmp –lm
+  Executar:
+    $ ./borwein_seq
+>>Versão Paralela
+  Compilar:
+    $ gcc borwein_paralelo.c –o borwein_paralelo –lgmp -pthread –lm
+  Executar:
+    $ ./borwein_paralelo
+
+>>>Monte-Carlo
+>>Versão Sequencial
+  Compilar:
+    $ gcc mc_seq.c –o mc_seq –lm
+  Executar:
+    $ ./mc_seq
+>>Versão Paralela
+  Compilar:
+    $ gcc mc_paralelo.c –o mc_paralelo -pthread –lm
+  Executar:
+    $ ./mc_seq
